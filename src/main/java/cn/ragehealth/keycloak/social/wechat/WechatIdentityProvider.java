@@ -106,6 +106,7 @@ public class WechatIdentityProvider extends AbstractOAuth2IdentityProvider<OAuth
         user.setName(getJsonProperty(profile, "nickname"));
         user.setIdpConfig(getConfig());
         user.setIdp(this);
+        user.setUserAttribute("avatar", getJsonProperty(profile, "headimgurl"));
         AbstractJsonUserAttributeMapper.storeUserProfileForMapper(user, profile, getConfig().getAlias());
         return user;
     }

@@ -7,7 +7,7 @@ import org.keycloak.models.IdentityProviderModel;
 import org.keycloak.models.KeycloakSession;
 
 /**
- * @author jacky.yong
+ * @author yangjian
  */
 public class WechatIdentityProviderFactory extends AbstractIdentityProviderFactory<WechatIdentityProvider>
         implements SocialIdentityProviderFactory<WechatIdentityProvider> {

@@ -35,7 +35,7 @@ import java.util.UUID;
 /**
  * <a href="https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=2639bbef696c2f1540dec98ed4d45bcca460dd86&lang=zh_CN">参考文档</a>
  *
- * @author jacky.yong
+ * @author yangjian
  */
 public class WechatIdentityProvider extends AbstractOAuth2IdentityProvider<OAuth2IdentityProviderConfig>
         implements SocialIdentityProvider<OAuth2IdentityProviderConfig> {

@@ -1,6 +1,8 @@
 # keycloak 微信第三方登录
 
-对 keycloak 15.0.0 版本实现了微信第三方登录
+对 keycloak 15.0.0 版本实现了微信第三方登录。
+
+优先获取用户 unionid 作为 keycloak 用户 username(即 keycloak 中的唯一标识)，如果没有，则以 openid 作为唯一标识
 
 # 使用方式
 

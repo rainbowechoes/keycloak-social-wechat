@@ -97,12 +97,12 @@ public class WechatIdentityProvider extends AbstractOAuth2IdentityProvider<OAuth
     protected BrokeredIdentityContext extractIdentityFromProfile(EventBuilder event, JsonNode profile) {
         String unionid = getJsonProperty(profile, "unionid");
 
-        BrokeredIdentityContext user = new BrokeredIdentityContext(
-                (unionid != null && unionid.length() > 0 ? unionid : getJsonProperty(profile, "openid")));
+        String userId = unionid != null && unionid.length() > 0 ? unionid : getJsonProperty(profile, "openid");
+        BrokeredIdentityContext user = new BrokeredIdentityContext(userId);
 
-        user.setUsername(getJsonProperty(profile, "openid"));
-        user.setBrokerUserId(getJsonProperty(profile, "openid"));
-        user.setModelUsername(getJsonProperty(profile, "openid"));
+        user.setUsername(userId);
+        user.setBrokerUserId(userId);
+        user.setModelUsername(userId);
         user.setName(getJsonProperty(profile, "nickname"));
         user.setIdpConfig(getConfig());
         user.setIdp(this);

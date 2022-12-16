@@ -131,12 +131,10 @@ public class WechatIdentityProvider extends AbstractOAuth2IdentityProvider<OAuth
             } else {
                 profile = new ObjectMapper().readTree(response);
             }
-            logger.info("get userInfo =" + profile.toString());
             context = extractIdentityFromProfile(null, profile);
         } catch (IOException e) {
             logger.error(e);
         }
-        logger.info("context is null? ====>" + (context == null));
 
         context.getContextData().put(FEDERATED_ACCESS_TOKEN, accessToken);
 
@@ -276,7 +274,6 @@ public class WechatIdentityProvider extends AbstractOAuth2IdentityProvider<OAuth
 
                 if (authorizationCode != null) {
                     String response = getAccessTokenFromWx(authorizationCode);
-                    logger.info("token response ====> " + response);
                     BrokeredIdentityContext federatedIdentity = getFederatedIdentity(response, true);
 
                     if (getConfig().isStoreToken()) {
@@ -314,12 +311,8 @@ public class WechatIdentityProvider extends AbstractOAuth2IdentityProvider<OAuth
          * @return
          */
         public String getAccessTokenFromWx(String code){
-            logger.info("config: " + getConfig());
-            logger.info("config info: {}" + getConfig().getConfig());
             String appId = getConfig().getConfig().get("clientId");
             String appSecret = getConfig().getClientSecret();
-            logger.info("wechat appId: " + appId);
-            logger.info("wechat appSecret: " + appSecret);
             String path = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+ appId +"&secret="+ appSecret +"&code="+code+"&grant_type=authorization_code";
             return getRequest(path);
         }

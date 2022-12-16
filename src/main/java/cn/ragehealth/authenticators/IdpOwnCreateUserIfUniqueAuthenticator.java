@@ -32,6 +32,7 @@ import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.services.ServicesLogger;
 import org.keycloak.services.messages.Messages;
+import org.keycloak.sessions.AuthenticationSessionModel;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -95,26 +96,25 @@ public class IdpOwnCreateUserIfUniqueAuthenticator extends AbstractIdpAuthentica
             context.getAuthenticationSession().setAuthNote(BROKER_REGISTERED_NEW_USER, "true");
             context.success();
         } else {
+            logger.info("用户重复，参考 idp 信息更新用户数据");
             logger.debugf("Duplication detected. There is already existing user with %s '%s' .",
                     duplication.getDuplicateAttributeName(), duplication.getDuplicateAttributeValue());
 
-            // Set duplicated user, so next authenticators can deal with it
             context.getAuthenticationSession().setAuthNote(EXISTING_USER_INFO, duplication.serialize());
-            //Only show error message if the authenticator was required
-            if (context.getExecution().isRequired()) {
-                Response challengeResponse = context.form()
-                        .setError(Messages.FEDERATED_IDENTITY_EXISTS, duplication.getDuplicateAttributeName(), duplication.getDuplicateAttributeValue())
-                        .createErrorPage(Response.Status.CONFLICT);
-                context.challenge(challengeResponse);
-                context.getEvent()
-                        .user(duplication.getExistingUserId())
-                        .detail("existing_" + duplication.getDuplicateAttributeName(), duplication.getDuplicateAttributeValue())
-                        .removeDetail(Details.AUTH_METHOD)
-                        .removeDetail(Details.AUTH_TYPE)
-                        .error(Errors.FEDERATED_IDENTITY_EXISTS);
-            } else {
-                context.attempted();
+
+            AuthenticationSessionModel authSession = context.getAuthenticationSession();
+            UserModel existUser = getExistingUser(session, realm, authSession);
+
+            for (Map.Entry<String, List<String>> attr : serializedCtx.getAttributes().entrySet()) {
+                if (!UserModel.USERNAME.equalsIgnoreCase(attr.getKey())) {
+                    existUser.setAttribute(attr.getKey(), attr.getValue());
+                }
             }
+
+            // Set duplicated user, so next authenticators can deal with it
+            context.setUser(existUser);
+            context.success();
+
         }
     }
 
